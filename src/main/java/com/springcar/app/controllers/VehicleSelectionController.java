@@ -60,7 +60,6 @@ public class VehicleSelectionController {
 		
 		session.setAttribute("car", carService.findById(idCar));
 		Reservation rent = (Reservation) session.getAttribute("reservation");
-		rent.setCarCategory(carService.findById(idCar).getCategory().getCodCategory());
 		session.setAttribute("reservation", rent);
 		
 		return "redirect:/reservation/extrasconfig";
@@ -116,9 +115,7 @@ public class VehicleSelectionController {
 		if (!categoryValue.isEmpty()) {
 			session.setAttribute("category", categoryValue);
 			for (Car c : fleet) {
-				if (c.getCategory().getCodCategory().equalsIgnoreCase(categoryValue)) {
 					filteredFleet.add(c);
-				}
 			}
 			fleet.clear();
 			fleet.addAll(filteredFleet);

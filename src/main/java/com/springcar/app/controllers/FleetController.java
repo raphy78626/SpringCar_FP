@@ -1,6 +1,7 @@
 package com.springcar.app.controllers;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springcar.app.models.entity.Car;
+import com.springcar.app.models.entity.Images;
 import com.springcar.app.models.entity.Reservation;
 import com.springcar.app.models.entity.TypeTransmission;
 import com.springcar.app.models.service.interfaces.ICarService;
@@ -23,73 +25,81 @@ public class FleetController {
 
 	@Autowired
 	ICarService carService;
-	
+
 	@GetMapping("/fleet")
 	public String showFleet(HttpSession session, Model model) {
-		
+
 		if (session.getAttribute("fleet") == null) {
 			session.setAttribute("fleet", carService.findAll());
 		}
 		return "fleet/index";
 	}
 	
-	
+	private Car buildToViewImages(Car car){
+		for(Images image : car.getImages()) {
+			 String base64 = Base64.getEncoder().encodeToString(image.getPhoto());
+		     image.setMimetype("data:"+image.getMimetype()+";base64,"+base64);
+		}
+       return car;
+	}
+
 	@GetMapping("/selectCar")
-	public String showPeriodSelector(HttpSession session, @ModelAttribute("reservation") Reservation rent, @RequestParam("id") Long idCar) {
-		session.setAttribute("car", carService.findById(idCar));
-		rent.setCarCategory(carService.findById(idCar).getCategory().getCodCategory());
+	public String showPeriodSelector(HttpSession session, @ModelAttribute("reservation") Reservation rent,
+			@RequestParam("id") Long idCar) {
+		
+		
+		
+		Car car = buildToViewImages(carService.findById(idCar));
+		session.setAttribute("car", car);
 		session.setAttribute("reservation", rent);
 		return "redirect:/reservation/dateselection/";
 	}
-	
+
 	@PostMapping("/fleet/filter")
-	public String filterCarFleet(HttpSession session,
-			@RequestParam(name="categorySelection") String categoryValue,
-			@RequestParam(name="transmissionSelection") TypeTransmission transmissionValue,
-			@RequestParam(name="priceOrderSelection") String priceOrderValue) {
-		
+	public String filterCarFleet(HttpSession session, @RequestParam(name = "categorySelection") String categoryValue,
+			@RequestParam(name = "transmissionSelection") TypeTransmission transmissionValue,
+			@RequestParam(name = "priceOrderSelection") String priceOrderValue) {
+
 		List<Car> fleet = carService.findAll();
 		List<Car> filteredFleet = new ArrayList<Car>();
-		
-			if (!categoryValue.isEmpty()) {
-				session.setAttribute("category", categoryValue);
-				for (Car c : fleet) {
-					if (c.getCategory().getCodCategory().equalsIgnoreCase(categoryValue)) {
-						filteredFleet.add(c);
-					}
-				}
-				fleet.clear();
-				fleet.addAll(filteredFleet);
-			}else {
-				session.removeAttribute("category");
+
+		if (!categoryValue.isEmpty()) {
+			session.setAttribute("category", categoryValue);
+			for (Car c : fleet) {
+				filteredFleet.add(c);
 			}
-			
-			if (transmissionValue != null) {
-				session.setAttribute("transmission", transmissionValue.toString());
-				filteredFleet.clear();
-				for (Car c : fleet) {
-					if (c.getTransmission().equals(transmissionValue)) {
-						filteredFleet.add(c);
-					}
+			fleet.clear();
+			fleet.addAll(filteredFleet);
+		} else {
+			session.removeAttribute("category");
+		}
+
+		if (transmissionValue != null) {
+			session.setAttribute("transmission", transmissionValue.toString());
+			filteredFleet.clear();
+			for (Car c : fleet) {
+				if (c.getTransmission().equals(transmissionValue)) {
+					filteredFleet.add(c);
 				}
-				fleet.clear();
-				fleet.addAll(filteredFleet);
-			} else {
-				session.removeAttribute("transmission");
 			}
-			
-			if (priceOrderValue != null) {
-				session.setAttribute("priceOrder", priceOrderValue);
-				if (!fleet.isEmpty()) {
-					filteredFleet = Utils.carSort(fleet, priceOrderValue);
-				}
-			} else {
-				session.removeAttribute("priceOrder");
+			fleet.clear();
+			fleet.addAll(filteredFleet);
+		} else {
+			session.removeAttribute("transmission");
+		}
+
+		if (priceOrderValue != null) {
+			session.setAttribute("priceOrder", priceOrderValue);
+			if (!fleet.isEmpty()) {
+				filteredFleet = Utils.carSort(fleet, priceOrderValue);
 			}
-		
-		session.setAttribute("fleet", filteredFleet);	
-		
+		} else {
+			session.removeAttribute("priceOrder");
+		}
+
+		session.setAttribute("fleet", filteredFleet);
+
 		return "redirect:/fleet";
 	}
-	
+
 }

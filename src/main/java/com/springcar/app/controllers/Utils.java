@@ -14,69 +14,67 @@ import com.springcar.app.models.entity.Reservation;
 
 public class Utils {
 
-	
-	
-	public static int calculateDifferenceInDays (Reservation rent) {
+	public static int calculateDifferenceInDays(Reservation rent) {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
 		cal.setTime(rent.getInitDate());
 		int initDay = cal.get(Calendar.DAY_OF_MONTH);
-		
+
 		cal.setTime(rent.getFinalDate());
 		int finalDay = cal.get(Calendar.DAY_OF_MONTH);
-		
+
 		int difference = finalDay - initDay;
-		
+
 		return difference;
 	}
-	
+
 	public static double calculateExtrasPrice(Reservation rent, Car car) {
 		double sumExtras = 0.0;
-		for (CommonExtra e: rent.getExtras()) {
+		for (CommonExtra e : rent.getExtras()) {
 			sumExtras += e.getPrice();
 		}
-		
+
 		if (rent.getTopInsurance()) {
-			sumExtras += car.getCategory().getPriceTopInsurance();
+			sumExtras += 0;
 		} else {
-			sumExtras += car.getCategory().getPriceBaseInsurance();
+			sumExtras += 0;
 		}
-		
+
 		if (rent.getTireAndGlassProtection()) {
-			sumExtras += car.getCategory().getPriceTireAndGlassProtection();
+			sumExtras += 0;
 		}
-		
+
 		return sumExtras;
 	}
-	
-	public static boolean isValid (Client newClient) {		
-		
+
+	public static boolean isValid(Client newClient) {
+
 		System.out.println(newClient.getName());
-		
+
 		if (newClient != null) {
 			if (!inputIsValid(newClient.getName())) {
 				return false;
 			}
-				
+
 			if (!inputIsValid(newClient.getSurname())) {
 				return false;
 			}
-			
+
 			if (!inputIsValid(newClient.getPhoneNumber())) {
 				return false;
 			}
-			
+
 			if (!inputIsValid(newClient.getIdNumber())) {
 				return false;
 			}
-							
+
 			if (!inputIsValid(newClient.getEmail())) {
 				return false;
 			}
-								
+
 			if (!inputIsValid(newClient.getUserName())) {
 				return false;
 			}
-									
+
 			if (!inputIsValid(newClient.getPassword())) {
 				return false;
 			}
@@ -84,79 +82,109 @@ public class Utils {
 
 		return true;
 	}
-	
-	public static boolean inputIsValid (String input) {
+
+	public static boolean isValidCar(Car car) {
+
+		System.out.println(car.getMake());
+
+		if (car != null) {
+			if (!inputIsValid(car.getMake())) {
+				return false;
+			}
+
+			if (!inputIsValid(car.getModel())) {
+				return false;
+			}
+
+			if (!validateInt(car.getPrice())) {
+				return false;
+			}
+
+			
+		}
+
+		return true;
+	}
+
+	public static boolean inputIsValid(String input) {
 		if (input != null && !input.equals("") && !input.isEmpty()) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static double calculateCarBaseTotalPrice (Reservation rent, Car car) {
-		
-		double carBasePrice = car.getCategory().getPriceBase();
+	public static boolean validateInt(int input) {
+		if (input > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static double calculateCarBaseTotalPrice(Reservation rent, Car car) {
+
+		double carBasePrice = 1000000;
 		int days = calculateDifferenceInDays(rent);
-		
+
 		return carBasePrice * days;
 	}
-	
-	public static double CalculateTotalReservationPrice (Reservation rent, Car car) {
-		
+
+	public static double CalculateTotalReservationPrice(Reservation rent, Car car) {
+
 		double sum = calculateExtrasPrice(rent, car) + calculateCarBaseTotalPrice(rent, car);
-		
+
 		return sum;
 	}
-	
+
 	public static List<Car> carSort(List<Car> fleet, String priceOrderValue) {
-		int n = fleet.size()-1;
+		int n = fleet.size() - 1;
 		int k;
-		
+
 		if (priceOrderValue.equalsIgnoreCase("ASCENDANT")) {
 			for (int m = n; m >= 0; m--) {
 				for (int i = 0; i < n; i++) {
 					k = i + 1;
-					if (fleet.get(i).getCategory().getPriceBase() > fleet.get(k).getCategory().getPriceBase()) {
-						Collections.swap(fleet, i, k);
-					}
+					/*
+					 * if (fleet.get(i).getCategory().getPriceBase() >
+					 * fleet.get(k).getCategory().getPriceBase()) { Collections.swap(fleet, i, k); }
+					 */
 				}
 			}
 		} else {
 			for (int m = n; m >= 0; m--) {
 				for (int i = 0; i < n; i++) {
 					k = i + 1;
-					if (fleet.get(i).getCategory().getPriceBase() < fleet.get(k).getCategory().getPriceBase()) {
-						Collections.swap(fleet, i, k);
-					}
+					/*
+					 * if (fleet.get(i).getCategory().getPriceBase() <
+					 * fleet.get(k).getCategory().getPriceBase()) { Collections.swap(fleet, i, k); }
+					 */
 				}
 			}
 		}
-		
+
 		return fleet;
 	}
-	
-	
-	public static long createReservationNumber (Client client, Reservation rent) {
-		
+
+	public static long createReservationNumber(Client client, Reservation rent) {
+
 		System.out.println("Generando idNumber...");
-		
+
 		List<String> values = new ArrayList<String>();
-		
+
 		values.add(client.getName());
 		values.add(client.getIdNumber());
 		values.add(rent.getCarCategory());
 		values.add(rent.getOfficeCode());
-		
+
 		long result = 17;
 		for (String s : values) {
 			if (s != null) {
-				result = (37*result + s.hashCode());
+				result = (37 * result + s.hashCode());
 				if (result < 0) {
-					(result)*=-1;
+					(result) *= -1;
 				}
-			}	
-		}	
+			}
+		}
 		return result;
 	}
-	
-	
+
 }

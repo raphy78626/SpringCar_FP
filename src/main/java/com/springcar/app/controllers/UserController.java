@@ -1,5 +1,8 @@
 package com.springcar.app.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -10,9 +13,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springcar.app.controllers.beans.LoginBean;
+import com.springcar.app.models.entity.Car;
+import com.springcar.app.models.entity.CarMake;
 import com.springcar.app.models.entity.Client;
+import com.springcar.app.models.entity.Images;
+import com.springcar.app.models.service.interfaces.ICarImagesService;
+import com.springcar.app.models.service.interfaces.ICarService;
 import com.springcar.app.models.service.interfaces.IClientService;
 
 @Controller
@@ -20,17 +30,23 @@ public class UserController {
 
 	@Autowired
 	IClientService clientService;
+	@Autowired
+	ICarService carService;
 	
+	@Autowired
+	ICarImagesService carImagesService;
+
 	@GetMapping("/user/login")
-	public String showLoginForm (HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String showLoginForm(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "/user/login/index";
 	}
-	
-	@PostMapping ("/user/login")
-	public String loginProcess (HttpServletRequest request, HttpServletResponse response, @ModelAttribute("login") LoginBean login, HttpSession session) {
-		
+
+	@PostMapping("/user/login")
+	public String loginProcess(HttpServletRequest request, HttpServletResponse response,
+			@ModelAttribute("login") LoginBean login, HttpSession session) {
+
 		Client client = clientService.findByUser(login.getUserName());
-		
+
 		if (null != login && client != null && client.getPassword().equals(login.getPassword())) {
 			session.setAttribute("client", client);
 		} else {
@@ -39,17 +55,77 @@ public class UserController {
 		}
 		return "redirect:/";
 	}
-	
+
+	@GetMapping("/user/addcars")
+	public String showAddCars(HttpServletRequest request, HttpServletResponse response, Model model) {
+		Car car = new Car();
+
+		HttpSession session = request.getSession(true);
+		model.addAttribute("makeList", carService.getAllCarMakes());
+		session.setAttribute("tempCar", car);
+		return "user/addcars/index";
+	}
+
+	private void buildFileObjects(MultipartFile[] files, Long vehicleId) {
+
+		try {
+			List<Images> storedFile = new ArrayList<>();
+
+			for (MultipartFile file : files) {
+				// update new contents
+				Images images = new Images();
+				images.setMimetype(file.getContentType());
+				images.setPhoto(file.getBytes());
+				images.setIdCar(vehicleId.intValue());
+				storedFile.add(images);
+				
+			}
+
+			// Save all Files to database
+			carImagesService.save(storedFile);
+
+		} catch (Exception e) {
+		}
+	}
+
+	@PostMapping("/user/addcars")
+	public String registerProcess(HttpSession session, @ModelAttribute("car") Car car,
+			@RequestParam("files") MultipartFile[] files) {
+
+		if (car.getMake().split("=").length > 0) {
+			car.setMake(car.getMake().split("=")[0]);
+		}
+
+		CarMake carMake = carService.findByMake(car.getMake(), car.getModel());
+		car.setMakeId(carMake.getMakeId());
+
+		
+
+		if (Utils.isValidCar(car)) {
+
+			carService.save(car);
+			buildFileObjects(files, car.getIdCar());
+
+		} else {
+			session.setAttribute("errorMessage", "Sorry, make sure to fill all the fields before continue");
+			return "user/addcars/index";
+
+		}
+		session.setAttribute("car", car);
+		session.removeAttribute("tempCar");
+		return "redirect:/";
+	}
+
 	@GetMapping("/user/registration")
-	public String showRegisterForm (HttpServletRequest request, HttpServletResponse response) {
+	public String showRegisterForm(HttpServletRequest request, HttpServletResponse response) {
 		Client client = new Client();
 		HttpSession session = request.getSession(true);
 		session.setAttribute("tempClient", client);
 		return "user/registration/index";
 	}
-	
+
 	@PostMapping("/user/registration")
-	public String registerProcess (HttpSession session, @ModelAttribute ("registration") Client newClient) {
+	public String registerProcess(HttpSession session, @ModelAttribute("registration") Client newClient) {
 
 		if (Utils.isValid(newClient)) {
 			if (!exists(newClient)) {
@@ -61,18 +137,17 @@ public class UserController {
 		} else {
 			session.setAttribute("errorMessage", "Sorry, make sure to fill all the fields before continue");
 			return "user/registration/index";
-			
+
 		}
 		session.setAttribute("client", newClient);
 		session.removeAttribute("tempClient");
 		return "redirect:/";
 	}
-	
-		
-	public boolean exists (Client client) {
+
+	public boolean exists(Client client) {
 		if (clientService.findByUser(client.getUserName()) != null) {
 			return true;
-		}	
+		}
 		return false;
 	}
 }

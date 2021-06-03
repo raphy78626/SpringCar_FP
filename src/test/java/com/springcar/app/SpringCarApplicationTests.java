@@ -49,21 +49,13 @@ public class SpringCarApplicationTests {
 		assertNotNull(carService.findAll());
 	}
 	
-	@Test
-	public void cargarCochesPorCategoria() {
-		assertNotNull(carService.findByCategory("CAT_SUP"));
-	}
 	
 	@Test
 	public void cargarCochesPorTransmision() {
 		assertNotNull(carService.findByTransmission(TypeTransmission.AUTOMATIC));
 	}
 	
-	@Test
-	public void cargarCochesPorTransmisionAndCategoria() {
-		assertNotNull(carService.findByTransmissionAndCategory(TypeTransmission.AUTOMATIC, "CAT_SUP"));
-	}
-	
+
 	//Test Category
 	@Test
 	public void cargarCategorias() {

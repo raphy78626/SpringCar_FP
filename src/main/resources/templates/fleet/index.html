@@ -13,12 +13,12 @@
 		<form th:action="@{/fleet/filter}" method="post">
 			<div class="form-group form-row mt-5 mb-5">
 				<div class="col-12 col-md-3">
-					<select name="categorySelection" class="form-control" id="categorySelection">
+					<!-- <select name="categorySelection" class="form-control" id="categorySelection">
 						<option value="">CATEGORY</option>
 						<option value="CAT_SUP" th:selected="${session.category == 'CAT_SUP'}">PLUS</option>
 						<option value="CAT_MED" th:selected="${session.category == 'CAT_MED'}">STANDARD</option>
 						<option value="CAT_ECO" th:selected="${session.category == 'CAT_ECO'}">ECONOMIC</option>
-					</select>
+					</select> -->
 				</div>
 				<div class="col-12 col-md-3">
 					<select name="transmissionSelection" class="form-control" id="transmissionSelection">
@@ -28,11 +28,11 @@
 					</select>
 				</div>
 				<div class="col-12 col-md-3">
-					<select name="priceOrderSelection" class="form-control" id="priceOrderSelection">
+				<!-- 	<select name="priceOrderSelection" class="form-control" id="priceOrderSelection">
 						<option value="">PRICE ORDER</option>
 						<option value="ASCENDANT" th:selected="${session.priceOrder == 'ASCENDANT'}">ASCENDANT</option>
 						<option value="DESCENDANT" th:selected="${session.priceOrder == 'DESCENDANT'}">DESCENDANT</option>
-					</select>
+					</select> -->
 				</div>
 				<div class="col-12 col-md-3 text-center">
 					<button type="submit" class="btn w-100">Filter</button>
@@ -58,15 +58,10 @@
 					</td>
 					<td class="col-12 col-md-4">
 						<div class="p-3">
-							<h2 th:text="${car.marca}"></h2>
+							<h2 th:text="${car.make}"></h2>
 							<strong class="pb-3 d-block" th:text="${car.model}"></strong>
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item bg-transparent text-dark">Transmission: <span th:text="${car.transmission}"></span></li>
-								<li class="list-group-item bg-transparent text-dark">AC: <span th:if="${car.ac} == true" th:text=" Yes"></span> <span th:if="${car.ac} != true" th:text=" No"></span>
-								</li>
-								<li class="list-group-item bg-transparent text-dark">Seats: <span th:text="${car.seats}"></span></li>
-								<li class="list-group-item bg-transparent text-dark">Doors: <span th:text="${car.doors}"></span></li>
-								<li class="list-group-item bg-transparent text-dark">Suitcases: <span th:text="${car.suitCases}"></span></li>
 							</ul>
 						</div>
 
@@ -74,7 +69,7 @@
 					<td class="col-12 col-md-2">
 						<div class="h-100 d-flex align-items-end flex-column p-3">
 							<div class="h-100 d-flex align-items-center">
-								<Strong th:inline="text"> [[${car.category.priceBase}]]&euro; <small class="float-right pr-2">&nbsp per day</small></strong>
+								<Strong th:inline="text"> [[${car.price}]]&euro; <small class="float-right pr-2">&nbsp per day</small></strong>
 							</div>
 							<a th:href="@{selectCar(id=${car.idCar})}" class="btn btn-sm mt-auto w-100">Choose</a>
 						</div>

@@ -126,18 +126,10 @@
 					</td>
 					<td class="col-12 col-md-4">
 						<div class="p-3">
-							<h2 th:text="${session.car.marca}"></h2>
+							<h2 th:text="${session.car.make}"></h2>
 							<strong class="pb-3 d-block" th:text="${session.car.model}"></strong>
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item bg-transparent text-dark">Transmission: <span th:text="${session.car.transmission}"></span>
-								</li>
-								<li class="list-group-item bg-transparent text-dark">AC: <span th:if="${session.car.ac} == true" th:text="Yes"></span> <span th:if="${session.car.ac} != true" th:text="No"></span>
-								</li>
-								<li class="list-group-item bg-transparent text-dark">Seats: <span th:text="${session.car.seats}"></span>
-								</li>
-								<li class="list-group-item bg-transparent text-dark">Doors: <span th:text="${session.car.doors}"></span>
-								</li>
-								<li class="list-group-item bg-transparent text-dark">Suitcases: <span th:text="${session.car.suitCases}"></span>
 								</li>
 							</ul>
 						</div>
