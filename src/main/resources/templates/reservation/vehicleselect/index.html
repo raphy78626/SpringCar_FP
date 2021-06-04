@@ -127,18 +127,24 @@
 	<div id="carFilterForm">
 		<form th:action="@{/reservation/vehicleselect/filter}" method="post">
 			<div class="form-group form-row mt-5 mb-5">
+
 				<div class="col-12 col-md-3">
-					<select name="categorySelection" class="form-control"
-						id="categorySelection">
-						<option value="">CATEGORY</option>
-						<option value="CAT_SUP"
-							th:selected="${session.category == 'CAT_SUP'}">PLUS</option>
-						<option value="CAT_MED"
-							th:selected="${session.category == 'CAT_MED'}">STANDARD</option>
-						<option value="CAT_ECO"
-							th:selected="${session.category == 'CAT_ECO'}">ECONOMIC</option>
+					<label for="make">Brand:</label> <select id="make" name="make"
+						class="form-control" required>
+						<option value="">Select brand</option>
+						<option th:each="make:${makeList}" th:value="${make}"
+							th:text="${make.key}"></option>
 					</select>
 				</div>
+				
+				<div class="col-12 col-md-3">
+					<label for="make">Model:</label> <label for="model">Model:</label> <select id="model"
+									name="model" class="form-control" required>
+									<option value="">Select...</option>
+								</select>
+				</div>
+
+				
 				<div class="col-12 col-md-3">
 					<select name="transmissionSelection" class="form-control"
 						id="transmissionSelection">
@@ -149,16 +155,7 @@
 							th:selected="${session.transmission == 'MANUAL'}">MANUAL</option>
 					</select>
 				</div>
-				<div class="col-12 col-md-3">
-					<select name="priceOrderSelection" class="form-control"
-						id="priceOrderSelection">
-						<option value="">PRICE ORDER</option>
-						<option value="ASCENDANT"
-							th:selected="${session.priceOrder == 'ASCENDANT'}">ASCENDANT</option>
-						<option value="DESCENDANT"
-							th:selected="${session.priceOrder == 'DESCENDANT'}">DESCENDANT</option>
-					</select>
-				</div>
+
 				<div class="col-12 col-md-3 text-center">
 					<button type="submit" class="btn w-100">Filter</button>
 				</div>

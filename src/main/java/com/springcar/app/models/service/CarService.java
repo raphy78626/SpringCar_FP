@@ -1,5 +1,6 @@
 package com.springcar.app.models.service;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import com.springcar.app.models.dao.ICarDao;
 import com.springcar.app.models.dao.ICarMakeDao;
 import com.springcar.app.models.entity.Car;
 import com.springcar.app.models.entity.CarMake;
+import com.springcar.app.models.entity.Images;
 import com.springcar.app.models.entity.TypeTransmission;
 import com.springcar.app.models.service.interfaces.ICarService;
 
@@ -24,8 +26,8 @@ public class CarService implements ICarService {
 
 	@Autowired
 	ICarDao carDao;
-	
-	@Autowired 
+
+	@Autowired
 	ICarMakeDao carMakeDao;
 
 	@Override
@@ -33,14 +35,41 @@ public class CarService implements ICarService {
 		return carDao.findByTransmission(transmission).orElse(null);
 	}
 
+	private Car buildImages(Car car) {
+		if (car.getImages().stream().findFirst().isPresent()) {
+			byte[] pic = car.getImages().stream().findFirst().get().getPhoto();
+			String mimeType = car.getImages().stream().findFirst().get().getMimetype();
+			String base64 = Base64.getEncoder().encodeToString(pic);
+			car.setPhoto("data:" + mimeType + ";base64," + base64);
+		}
+		return car;
+	}
+
+	private String buildToViewImages(Car car) {
+		if(car.getImages() != null 
+				&& !car.getImages().isEmpty() 
+				&& car.getImages().stream().findFirst().isPresent()) {
+			byte[] firstPic = car.getImages().stream().findFirst().get().getPhoto();
+			String mimeType = car.getImages().stream().findFirst().get().getMimetype();
+			String base64 = Base64.getEncoder().encodeToString(firstPic);
+			return "data:" + mimeType + ";base64," + base64;
+		}
+		return "";
+	}
+
 	@Override
 	public List<Car> findAll() {
+		List<Car> cars = (List<Car>)carDao.findAll();
+		for(Car car : cars) {
+			car.setPhoto(buildToViewImages(car));
+		}
+		
 		return (List<Car>) carDao.findAll();
 	}
 
 	@Override
 	public Car findById(Long id) {
-		
+
 		return carDao.findById(id).orElse(null);
 	}
 
@@ -53,8 +82,8 @@ public class CarService implements ICarService {
 	public Map<String, Set<String>> getAllCarMakes() {
 		Map<String, List<String>> carMakeList = new HashMap<>();
 		Optional<List<CarMake>> optionalCarMakeList = carMakeDao.getAllCarMake();
-		if(optionalCarMakeList.isPresent()) {
-			
+		if (optionalCarMakeList.isPresent()) {
+
 			return buildHashmapCarMake(optionalCarMakeList.get());
 		}
 		return Collections.emptyMap();
@@ -62,13 +91,12 @@ public class CarService implements ICarService {
 
 	private Map<String, Set<String>> buildHashmapCarMake(List<CarMake> carMakeList) {
 		Map<String, Set<String>> carMakeMap = new HashMap<>();
-		for(CarMake carMake : carMakeList) {
-			if(carMakeMap.containsKey(carMake.getMake())) {
+		for (CarMake carMake : carMakeList) {
+			if (carMakeMap.containsKey(carMake.getMake())) {
 				Set<String> tempSet = carMakeMap.get(carMake.getMake());
 				tempSet.add(carMake.getModel());
 				carMakeMap.put(carMake.getMake(), tempSet);
-			}
-			else {
+			} else {
 				Set<String> tempSet = new HashSet<>();
 				tempSet.add(carMake.getModel());
 				carMakeMap.put(carMake.getMake(), tempSet);
@@ -81,10 +109,10 @@ public class CarService implements ICarService {
 	public CarMake findByMake(String make, String model) {
 		CarMake carMake = null;
 		Optional<List<CarMake>> optionalCarMakeList = carMakeDao.findByCarMakeAndModel(make, model);
-		if(optionalCarMakeList.isPresent() &&  !optionalCarMakeList.get().isEmpty()) {
+		if (optionalCarMakeList.isPresent() && !optionalCarMakeList.get().isEmpty()) {
 			carMake = optionalCarMakeList.get().get(0);
 		}
-		
+
 		return carMake;
 	}
 

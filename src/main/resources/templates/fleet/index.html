@@ -1,39 +1,48 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{base}">
 
 <head>
 <title>Fleet</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script th:src="@{/js/dynaRDrop.js}"></script>
 </head>
 
-<div layout:fragment="page_content" id="page_content" class="container h-100 bg-white overflow-hidden">
+<div layout:fragment="page_content" id="page_content"
+	class="container h-100 bg-white overflow-hidden">
 
 	<!-- FILTER FORM -->
 
 	<div id="carFilterForm">
 		<form th:action="@{/fleet/filter}" method="post">
 			<div class="form-group form-row mt-5 mb-5">
+
 				<div class="col-12 col-md-3">
-					<!-- <select name="categorySelection" class="form-control" id="categorySelection">
-						<option value="">CATEGORY</option>
-						<option value="CAT_SUP" th:selected="${session.category == 'CAT_SUP'}">PLUS</option>
-						<option value="CAT_MED" th:selected="${session.category == 'CAT_MED'}">STANDARD</option>
-						<option value="CAT_ECO" th:selected="${session.category == 'CAT_ECO'}">ECONOMIC</option>
-					</select> -->
-				</div>
-				<div class="col-12 col-md-3">
-					<select name="transmissionSelection" class="form-control" id="transmissionSelection">
-						<option value="">TRANSMISSION</option>
-						<option value="AUTOMATIC" th:selected="${session.transmission == 'AUTOMATIC'}">AUTOMATIC</option>
-						<option value="MANUAL" th:selected="${session.transmission == 'MANUAL'}">MANUAL</option>
+					<select id="make" name="make" class="form-control" required>
+						<option value="">BRAND</option>
+						<option th:each="make:${makeList}" th:value="${make}"
+							th:text="${make.key}"></option>
 					</select>
 				</div>
 				<div class="col-12 col-md-3">
-				<!-- 	<select name="priceOrderSelection" class="form-control" id="priceOrderSelection">
-						<option value="">PRICE ORDER</option>
-						<option value="ASCENDANT" th:selected="${session.priceOrder == 'ASCENDANT'}">ASCENDANT</option>
-						<option value="DESCENDANT" th:selected="${session.priceOrder == 'DESCENDANT'}">DESCENDANT</option>
-					</select> -->
+					<select id="model" name="model" class="form-control" required>
+						<option value="">Select...</option>
+					</select>
 				</div>
+				<div class="col-12 col-md-3">
+					<select name="transmissionSelection" class="form-control"
+						id="transmissionSelection">
+						<option value="">TRANSMISSION</option>
+						<option value="AUTOMATIC"
+							th:selected="${session.transmission == 'AUTOMATIC'}">AUTOMATIC</option>
+						<option value="MANUAL"
+							th:selected="${session.transmission == 'MANUAL'}">MANUAL</option>
+					</select>
+				</div>
+
+
 				<div class="col-12 col-md-3 text-center">
 					<button type="submit" class="btn w-100">Filter</button>
 				</div>
@@ -53,7 +62,8 @@
 				<tr class="row mb-3" th:each="car:${session.fleet}">
 					<td class="col-12 col-md-6">
 						<div class="h-100 d-flex align-items-center flex-column p-3">
-							<img style="max-width: 320px;" class="my-auto" th:src="@{${car.photo}}" />
+							<img style="max-width: 320px;" class="my-auto"
+								th:src="@{${car.photo}}" />
 						</div>
 					</td>
 					<td class="col-12 col-md-4">
@@ -61,7 +71,9 @@
 							<h2 th:text="${car.make}"></h2>
 							<strong class="pb-3 d-block" th:text="${car.model}"></strong>
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item bg-transparent text-dark">Transmission: <span th:text="${car.transmission}"></span></li>
+								<li class="list-group-item bg-transparent text-dark">Transmission:
+									<span th:text="${car.transmission}"></span>
+								</li>
 							</ul>
 						</div>
 
@@ -69,9 +81,10 @@
 					<td class="col-12 col-md-2">
 						<div class="h-100 d-flex align-items-end flex-column p-3">
 							<div class="h-100 d-flex align-items-center">
-								<Strong th:inline="text"> [[${car.price}]]&euro; <small class="float-right pr-2">&nbsp per day</small></strong>
+								<Strong th:inline="text"> Rs [[${car.price}]] </strong>
 							</div>
-							<a th:href="@{selectCar(id=${car.idCar})}" class="btn btn-sm mt-auto w-100">Choose</a>
+							<a th:href="@{selectCar(id=${car.idCar})}"
+								class="btn btn-sm mt-auto w-100">Choose</a>
 						</div>
 					</td>
 				</tr>

@@ -29,26 +29,24 @@ public class FleetController {
 	@GetMapping("/fleet")
 	public String showFleet(HttpSession session, Model model) {
 
-		if (session.getAttribute("fleet") == null) {
-			session.setAttribute("fleet", carService.findAll());
-		}
+		session.setAttribute("fleet", carService.findAll());
+		model.addAttribute("makeList", carService.getAllCarMakes());
 		return "fleet/index";
 	}
-	
-	private Car buildToViewImages(Car car){
-		for(Images image : car.getImages()) {
-			 String base64 = Base64.getEncoder().encodeToString(image.getPhoto());
-		     image.setMimetype("data:"+image.getMimetype()+";base64,"+base64);
+
+	private Car buildToViewImages(Car car) {
+
+		for (Images image : car.getImages()) {
+			String base64 = Base64.getEncoder().encodeToString(image.getPhoto());
+			image.setMimetype("data:" + image.getMimetype() + ";base64," + base64);
 		}
-       return car;
+		return car;
 	}
 
 	@GetMapping("/selectCar")
 	public String showPeriodSelector(HttpSession session, @ModelAttribute("reservation") Reservation rent,
 			@RequestParam("id") Long idCar) {
-		
-		
-		
+
 		Car car = buildToViewImages(carService.findById(idCar));
 		session.setAttribute("car", car);
 		session.setAttribute("reservation", rent);
@@ -56,22 +54,30 @@ public class FleetController {
 	}
 
 	@PostMapping("/fleet/filter")
-	public String filterCarFleet(HttpSession session, @RequestParam(name = "categorySelection") String categoryValue,
+	public String filterCarFleet(HttpSession session,
 			@RequestParam(name = "transmissionSelection") TypeTransmission transmissionValue,
-			@RequestParam(name = "priceOrderSelection") String priceOrderValue) {
+			@RequestParam(name = "make") String make, @RequestParam(name = "model") String model) {
+		
+		if (make.split("=").length > 0) {
+			make = make.split("=")[0];
+		}
+		
 
 		List<Car> fleet = carService.findAll();
 		List<Car> filteredFleet = new ArrayList<Car>();
 
-		if (!categoryValue.isEmpty()) {
-			session.setAttribute("category", categoryValue);
+		if (!make.isEmpty()) {
+			session.setAttribute("make", make);
 			for (Car c : fleet) {
-				filteredFleet.add(c);
+				if(c.getMake().equals(make)) {
+					filteredFleet.add(c);	
+				}
+				
 			}
 			fleet.clear();
 			fleet.addAll(filteredFleet);
 		} else {
-			session.removeAttribute("category");
+			session.removeAttribute("make");
 		}
 
 		if (transmissionValue != null) {
@@ -88,14 +94,21 @@ public class FleetController {
 			session.removeAttribute("transmission");
 		}
 
-		if (priceOrderValue != null) {
-			session.setAttribute("priceOrder", priceOrderValue);
-			if (!fleet.isEmpty()) {
-				filteredFleet = Utils.carSort(fleet, priceOrderValue);
+		if (model != null) {
+			session.setAttribute("model", model);
+			filteredFleet.clear();
+			for (Car c : fleet) {
+				if (c.getModel().equals(model)) {
+					filteredFleet.add(c);
+				}
 			}
+			fleet.clear();
+			fleet.addAll(filteredFleet);
 		} else {
-			session.removeAttribute("priceOrder");
+			session.removeAttribute("model");
 		}
+
+		
 
 		session.setAttribute("fleet", filteredFleet);
 
