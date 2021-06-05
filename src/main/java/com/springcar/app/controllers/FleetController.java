@@ -10,13 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.springcar.app.models.entity.Car;
 import com.springcar.app.models.entity.Images;
-import com.springcar.app.models.entity.Reservation;
 import com.springcar.app.models.entity.TypeTransmission;
 import com.springcar.app.models.service.interfaces.ICarService;
 
@@ -44,12 +42,11 @@ public class FleetController {
 	}
 
 	@GetMapping("/selectCar")
-	public String showPeriodSelector(HttpSession session, @ModelAttribute("reservation") Reservation rent,
+	public String showPeriodSelector(HttpSession session,
 			@RequestParam("id") Long idCar) {
 
 		Car car = buildToViewImages(carService.findById(idCar));
 		session.setAttribute("car", car);
-		session.setAttribute("reservation", rent);
 		return "redirect:/reservation/dateselection/";
 	}
 

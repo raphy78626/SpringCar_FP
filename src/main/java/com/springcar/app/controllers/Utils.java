@@ -1,51 +1,13 @@
 package com.springcar.app.controllers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 
 import com.springcar.app.models.entity.Car;
 import com.springcar.app.models.entity.Client;
-import com.springcar.app.models.entity.CommonExtra;
-import com.springcar.app.models.entity.Office;
-import com.springcar.app.models.entity.Reservation;
 
 public class Utils {
 
-	public static int calculateDifferenceInDays(Reservation rent) {
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
-		cal.setTime(rent.getInitDate());
-		int initDay = cal.get(Calendar.DAY_OF_MONTH);
-
-		cal.setTime(rent.getFinalDate());
-		int finalDay = cal.get(Calendar.DAY_OF_MONTH);
-
-		int difference = finalDay - initDay;
-
-		return difference;
-	}
-
-	public static double calculateExtrasPrice(Reservation rent, Car car) {
-		double sumExtras = 0.0;
-		for (CommonExtra e : rent.getExtras()) {
-			sumExtras += e.getPrice();
-		}
-
-		if (rent.getTopInsurance()) {
-			sumExtras += 0;
-		} else {
-			sumExtras += 0;
-		}
-
-		if (rent.getTireAndGlassProtection()) {
-			sumExtras += 0;
-		}
-
-		return sumExtras;
-	}
-
+	
 	public static boolean isValid(Client newClient) {
 
 		System.out.println(newClient.getName());
@@ -120,20 +82,9 @@ public class Utils {
 		return false;
 	}
 
-	public static double calculateCarBaseTotalPrice(Reservation rent, Car car) {
 
-		double carBasePrice = 1000000;
-		int days = calculateDifferenceInDays(rent);
 
-		return carBasePrice * days;
-	}
-
-	public static double CalculateTotalReservationPrice(Reservation rent, Car car) {
-
-		double sum = calculateExtrasPrice(rent, car) + calculateCarBaseTotalPrice(rent, car);
-
-		return sum;
-	}
+	
 
 	public static List<Car> carSort(List<Car> fleet, String priceOrderValue) {
 		int n = fleet.size() - 1;
@@ -164,27 +115,6 @@ public class Utils {
 		return fleet;
 	}
 
-	public static long createReservationNumber(Client client, Reservation rent) {
-
-		System.out.println("Generando idNumber...");
-
-		List<String> values = new ArrayList<String>();
-
-		values.add(client.getName());
-		values.add(client.getIdNumber());
-		values.add(rent.getCarCategory());
-		values.add(rent.getOfficeCode());
-
-		long result = 17;
-		for (String s : values) {
-			if (s != null) {
-				result = (37 * result + s.hashCode());
-				if (result < 0) {
-					(result) *= -1;
-				}
-			}
-		}
-		return result;
-	}
+	
 
 }
