@@ -8,13 +8,16 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarCollapse">
-				<ul class="navbar-nav mr-auto">
+				<ul class="navbar-nav mr-auto" sec:authorize="isAuthenticated()">
 					<li class="nav-item"><a class="nav-link" href="/fleet">Our fleet <span class="sr-only">(current)</span></a></li>
+				</ul>
+				<ul class="navbar-nav mr-auto" sec:authorize="isAuthenticated()">
+					<li class="nav-item"><a class="nav-link" href="/user/addcars">Add Cars <span class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="navbar-nav ml-auto mt-2 mt-md-0">
 				    <li class="nav-item">
                     	<a class="nav-link pr-0" th:if="${session.client == null}" href="/user/login"><i class="fas fa-user-circle mr-2"></i>Login</a>
-                    	<a class="nav-link pr-0" th:if="${session.client != null}" href="#"><i class="fas fa-user-circle mr-2"></i><span th:text="${session.client.userName}"></span></a>
+                    	<a class="nav-link pr-0" th:if="${session.client != null}" href="#"><i class="fas fa-user-circle mr-2"></i><span th:text="${session.client.email}"></span></a>
                 	</li>				
 				</ul>
 			</div>

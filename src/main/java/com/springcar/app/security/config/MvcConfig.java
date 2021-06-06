@@ -25,20 +25,27 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(final ResourceHandlerRegistry registry)
 	{
 		registry.addResourceHandler("/**",
+				"/assets/**",
         		"/css/**",
+        		"/vendor/**",
                 "/resources/**",
                 "/js/**",
                 "/images/**",
                 "/api/**",
                 "/font-awesome/**"
-               
+                
                )
 		        .addResourceLocations(
+		           "classpath:/vendor/",
         		   "classpath:/static/css/",
         		   "classpath:/static/js/",
         		   "classpath:/static/images/",
         		   "classpath:/static/api/",
                    "classpath:/resources/",
-                   "classpath:/static/font-awesome/");
+                   "classpath:/static/font-awesome/",
+                   "classpath:/assets/",
+                   "classpath:/assets/images/", 
+                   "classpath:/assets/css/", 
+                   "classpath:/assets/fonts/");
 	}
 }

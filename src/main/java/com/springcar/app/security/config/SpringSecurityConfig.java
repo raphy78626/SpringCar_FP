@@ -1,18 +1,20 @@
 package com.springcar.app.security.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-
-import javax.sql.DataSource;
 
 /**
  * Spring Security Configuration
@@ -40,11 +42,29 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.queries.roles-query}")
     private String rolesQuery;
+    
+    @Autowired
+	CustomUserDetailsService userDetailsService;
 
     @Autowired
     public SpringSecurityConfig(AccessDeniedHandler accessDeniedHandler, DataSource dataSource) {
         this.accessDeniedHandler = accessDeniedHandler;
         this.dataSource = dataSource;
+    }
+    
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+      web
+        .ignoring()
+           .antMatchers("/resources/**"
+        		   ,"/assets/**", 
+        		   "/static/**", 
+        		   "/static/assets/**", 
+        		   "/css/**", 
+        		   "/js/**", 
+        		   "/img/**", 
+        		   "/icon/**", 
+        		   "/vendor/**"); // #3
     }
 
     /**
@@ -57,7 +77,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+    	 http.authorizeRequests().antMatchers("/assets/images/**","/vendor/**","/images/**", "/js/**",  "/css/**",  
+    			 "/assets/images/**", "/assets/css/**", 
+    			 "/assets/fonts/**", "/assets/js/**").permitAll().anyRequest().permitAll();
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/fleet/index", "/user/login/", "/user/registration", "/error", "/h2-console/**").permitAll()
@@ -65,6 +87,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
+                .usernameParameter("email")
                 .defaultSuccessUrl("/fleet")
                 .permitAll()
                 .and()
@@ -77,24 +100,28 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Bean
+	public DaoAuthenticationProvider authProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
+    
     /**
      * Authentication details
      */
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        // Database authentication
-        auth.
-                jdbcAuthentication()
-                .usersByUsernameQuery(usersQuery)
-                .authoritiesByUsernameQuery(rolesQuery)
-                .dataSource(dataSource)
-                .passwordEncoder(passwordEncoder());
-
-        // In memory authentication
-        auth.inMemoryAuthentication()
-                .withUser(adminUsername).password(adminPassword).roles("ADMIN");
-    }
+	/*
+	 * @Autowired public void configureGlobal(AuthenticationManagerBuilder auth)
+	 * throws Exception {
+	 * 
+	 * // Database authentication auth. jdbcAuthentication()
+	 * .usersByUsernameQuery(usersQuery) .authoritiesByUsernameQuery(rolesQuery)
+	 * .dataSource(dataSource) .passwordEncoder(passwordEncoder());
+	 * 
+	 * // In memory authentication auth.inMemoryAuthentication()
+	 * .withUser(adminUsername).password(adminPassword).roles("ADMIN"); }
+	 */
 
     /**
      * Configure and return BCrypt password encoder

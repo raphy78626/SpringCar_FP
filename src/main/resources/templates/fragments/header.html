@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="headerFragment">
 <title th:include=":: #pageTitle">Layout Generic Title</title>
-<link rel="shortcut icon" type="image/png" href="/images/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="/images/favicon.png" />
 
 <!-- Required meta tags -->
 <meta charset="utf-8">
@@ -15,7 +15,24 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-	
+<div id="navbar" class="collapse navbar-collapse navbar-right">
+	<!-- show shoppingCart only if user is not yet authenticated -->
+	<ul class="nav navbar-nav" sec:authorize="isAuthenticated()">
+		<li class="active"><a th:href="@{/fleet}">Our fleet</a></li>
+	</ul>
+	<!-- show registration only if user is not yet authenticated -->
+	<ul class="nav navbar-nav" sec:authorize="!isAuthenticated()">
+		<li class="active"><a th:href="@{/user/registration}">Registration</a></li>
+	</ul>
+	<!-- show login only if user is not yet authenticated -->
+	<ul class="nav navbar-nav" sec:authorize="!isAuthenticated()">
+		<li class="active"><a th:href="@{/user/login}">Login</a></li>
+	</ul>
+	<!-- show sign out only if user is authenticated -->
+	<ul class="nav navbar-nav" sec:authorize="isAuthenticated()">
+		<li class="active"><a th:href="@{/logout}">Sign Out</a></li>
+	</ul>
+</div>
 <!-- <link href="/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet">	 -->
 
 </head>
