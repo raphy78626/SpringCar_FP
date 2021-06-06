@@ -6,7 +6,6 @@ import com.springcar.app.models.entity.User;
 
 public interface UserService {
 
-    Optional<User> findByUserName(String userName);
 
     Optional<User> findByEmail(String email);
 

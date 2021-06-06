@@ -38,21 +38,9 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Column(name = "user_name", nullable = false, unique = true)
-    @Length(min = 5, message = "*Your username must have at least 5 characters")
-    @NotBlank(message = "*Please provide your name")
-    private String userName;
+   
 
-    public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-
-    @Column(name = "last_name")
+	@Column(name = "last_name")
     @NotBlank(message = "*Please provide your last name")
     private String lastName;
     

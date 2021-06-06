@@ -51,7 +51,7 @@ public class UserController {
 	public String loginProcess(HttpServletRequest request, HttpServletResponse response,
 			@ModelAttribute("login") LoginBean login, HttpSession session) {
 
-		Optional<User> userOption = clientService.findByUserName(login.getUserName());
+		Optional<User> userOption = clientService.findByEmail(login.getEmail());
 
 		if (userOption.isPresent() && userOption.get().getPassword().equals(login.getPassword())) {
 			session.setAttribute("client", userOption.get());
@@ -139,16 +139,11 @@ public class UserController {
                     .rejectValue("email", "error.user",
                             "There is already a user registered with the email provided");
         }
-        if (clientService.findByUserName(user.getUserName()).isPresent()) {
-            bindingResult
-                    .rejectValue("username", "error.user",
-                            "There is already a user registered with the username provided");
-        }
 
         ModelAndView modelAndView = new ModelAndView();
 
         if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("/user/registration");
+            modelAndView.setViewName("/user/registration/index");
         } else {
             // Registration successful, save user
             // Set user role to USER and set it as active
@@ -156,13 +151,13 @@ public class UserController {
 
             modelAndView.addObject("successMessage", "User has been registered successfully");
             modelAndView.addObject("user", new User());
-            modelAndView.setViewName("/user/registration");
+            modelAndView.setViewName("/user/registration/index");
         }
         return modelAndView;
     }
 
 	public boolean exists(User client) {
-		if (clientService.findByUserName(client.getUserName()) != null) {
+		if (clientService.findByEmail(client.getEmail()) != null) {
 			return true;
 		}
 		return false;

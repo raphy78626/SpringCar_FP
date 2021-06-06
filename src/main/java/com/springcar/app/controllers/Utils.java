@@ -17,9 +17,6 @@ public class Utils {
 				return false;
 			}
 
-			if (!inputIsValid(newClient.getUserName())) {
-				return false;
-			}
 
 			if (!inputIsValid(newClient.getPassword())) {
 				return false;

@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{base}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <head>
 <title>Register</title>
 </head>
 
-<div layout:fragment="page_content" id="page_content"
-	class="container h-100 bg-white overflow-hidden">
+<div layout:fragment="page_content" id="page_content" class="container h-100 bg-white overflow-hidden">
 
 
 	<!-- NEW REGISTRATION FORM -->
@@ -18,46 +14,45 @@
 		<div class="col-sm-9 col-md-7 col-lg-7 mx-auto">
 			<div class="card my-5">
 				<div class="card-body">
-				<div class="alert alert-info" th:if="${successMessage}" th:utext="${successMessage}"></div>
 					<h5 class="card-title text-center">Register</h5>
-					<form th:action="@{/user/registration}" th:object="${user}"
-						method="post">
+					<form th:action="@{/user/registration}" th:object="${user}" method="post">
 						<div class="row form-row px-0">
 							<div class="form-group col-lg-6">
-								<label th:if="${#fields.hasErrors('firstName')}"
-									th:errors="*{firstName}" class="alert alert-danger">First
-									Name</label> <input type="text" id="inputName" th:field="*{firstName}"
-									class="form-control" placeholder="First Name" required
-									autofocus>
+								<label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                           class="alert alert-danger"></label>
+								<input type="text" id="inputName" name="firstName" class="form-control" placeholder="First Name" required autofocus>
 							</div>
 
 							<div class="form-group col-lg-6">
-								<label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
-                           class="alert alert-danger"></label>
-                    <input type="text" th:field="*{lastName}" placeholder="Last Name"
-                           class="form-control input-lg"/>
+								<label for="inputSurname">Last Name</label>
+								<input type="text" id="inputLastName" name="lastName" class="form-control" placeholder="Last Name" required>
 							</div>
 						</div>
-						
+					
+					
 						<div class="form-group">
-							 <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-                           class="alert alert-danger"></label>
-                    <input type="text" th:field="*{email}" placeholder="Email"
-                           class="form-control input-lg"/>
+							<label for="inputEmail">Email</label>
+							<input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email" required>
 						</div>
 						<div class="row form-row px-0">
 							<div class="form-group col-lg-6">
-								 <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                           class="alert alert-danger"></label>
-                    <input type="password" th:field="*{password}" placeholder="Password"
-                           class="form-control input-lg"/>
+								<label for="inputUsername">Username</label>
+								<input type="text" id="inputUsername" name="userName" class="form-control" placeholder="Username" required autofocus>
+								<small th:if="${session.error_usernameTaken != null}" th:text="${session.error_usernameTaken}" id="passwordHelp" class="text-danger"></small>
 							</div>
-							
 						</div>
+						<div class="row form-row px-0">
+							<div class="form-group col-lg-6">
+								<label for="inputPassword">Password</label>
+								<input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+							</div>
 						
-						<button class="btn btn-lg btn-google btn-block text-uppercase"
-							type="submit">
-							<i class="fas fa-user-circle mr-2"></i> Register
+						</div>
+						<div class="form-group pl-4">
+							<input class="form-check-input" type="checkbox" value="" id="defaultCheck1" required>
+							<label class="form-check-label" for="defaultCheck1"> I will be 18 years or oder at the time of the rental. </label>
+						</div>
+						<button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"> <i class="fas fa-user-circle mr-2"></i> Register
 						</button>
 					</form>
 				</div>

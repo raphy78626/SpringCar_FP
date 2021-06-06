@@ -12,7 +12,7 @@ import com.springcar.app.models.dao.UserRepository;
 import com.springcar.app.models.entity.User;
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
 	
 	@Autowired
@@ -26,10 +26,6 @@ public class UserServiceImp implements UserService {
 
    
 
-    @Override
-    public Optional<User> findByUserName(String username) {
-        return userRepository.findByUserName(username);
-    }
 
     @Override
     public Optional<User> findByEmail(String email) {

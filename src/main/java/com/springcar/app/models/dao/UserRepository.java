@@ -9,6 +9,4 @@ import com.springcar.app.models.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(@Param("email") String email);
-
-    Optional<User> findByUserName(@Param("userName") String userName);
 }
