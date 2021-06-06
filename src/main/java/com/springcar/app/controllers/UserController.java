@@ -2,34 +2,40 @@ package com.springcar.app.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.springcar.app.controllers.beans.LoginBean;
 import com.springcar.app.models.entity.Car;
 import com.springcar.app.models.entity.CarMake;
-import com.springcar.app.models.entity.Client;
 import com.springcar.app.models.entity.Images;
+import com.springcar.app.models.entity.User;
+import com.springcar.app.models.service.UserService;
 import com.springcar.app.models.service.interfaces.ICarImagesService;
 import com.springcar.app.models.service.interfaces.ICarService;
-import com.springcar.app.models.service.interfaces.IClientService;
 
 @Controller
 public class UserController {
 
 	@Autowired
-	IClientService clientService;
+	UserService clientService;
 	@Autowired
 	ICarService carService;
 	
@@ -45,10 +51,10 @@ public class UserController {
 	public String loginProcess(HttpServletRequest request, HttpServletResponse response,
 			@ModelAttribute("login") LoginBean login, HttpSession session) {
 
-		Client client = clientService.findByUser(login.getUserName());
+		Optional<User> userOption = clientService.findByUserName(login.getUserName());
 
-		if (null != login && client != null && client.getPassword().equals(login.getPassword())) {
-			session.setAttribute("client", client);
+		if (userOption.isPresent() && userOption.get().getPassword().equals(login.getPassword())) {
+			session.setAttribute("client", userOption.get());
 		} else {
 			session.setAttribute("error_userAuthentification", "Username or password is wrong!");
 			return "user/login/index";
@@ -116,36 +122,47 @@ public class UserController {
 		return "redirect:/";
 	}
 
-	@GetMapping("/user/registration")
-	public String showRegisterForm(HttpServletRequest request, HttpServletResponse response) {
-		Client client = new Client();
-		HttpSession session = request.getSession(true);
-		session.setAttribute("tempClient", client);
-		return "user/registration/index";
-	}
+	@RequestMapping(value = "/user/registration", method = RequestMethod.GET)
+    public ModelAndView registration() {
+        ModelAndView modelAndView = new ModelAndView();
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("/user/registration/index");
+        return modelAndView;
+    }
 
-	@PostMapping("/user/registration")
-	public String registerProcess(HttpSession session, @ModelAttribute("registration") Client newClient) {
+    @RequestMapping(value = "/user/registration", method = RequestMethod.POST)
+    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
 
-		if (Utils.isValid(newClient)) {
-			if (!exists(newClient)) {
-				clientService.save(newClient);
-			} else {
-				session.setAttribute("error_usernameTaken", "Sorry, this Username already exists");
-				return "user/registration/index";
-			}
-		} else {
-			session.setAttribute("errorMessage", "Sorry, make sure to fill all the fields before continue");
-			return "user/registration/index";
+        if (clientService.findByEmail(user.getEmail()).isPresent()) {
+            bindingResult
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the email provided");
+        }
+        if (clientService.findByUserName(user.getUserName()).isPresent()) {
+            bindingResult
+                    .rejectValue("username", "error.user",
+                            "There is already a user registered with the username provided");
+        }
 
-		}
-		session.setAttribute("client", newClient);
-		session.removeAttribute("tempClient");
-		return "redirect:/";
-	}
+        ModelAndView modelAndView = new ModelAndView();
 
-	public boolean exists(Client client) {
-		if (clientService.findByUser(client.getUserName()) != null) {
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("/user/registration");
+        } else {
+            // Registration successful, save user
+            // Set user role to USER and set it as active
+        	clientService.saveUser(user);
+
+            modelAndView.addObject("successMessage", "User has been registered successfully");
+            modelAndView.addObject("user", new User());
+            modelAndView.setViewName("/user/registration");
+        }
+        return modelAndView;
+    }
+
+	public boolean exists(User client) {
+		if (clientService.findByUserName(client.getUserName()) != null) {
 			return true;
 		}
 		return false;

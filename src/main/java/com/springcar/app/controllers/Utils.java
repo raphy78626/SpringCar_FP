@@ -3,31 +3,15 @@ package com.springcar.app.controllers;
 import java.util.List;
 
 import com.springcar.app.models.entity.Car;
-import com.springcar.app.models.entity.Client;
+import com.springcar.app.models.entity.User;
 
 public class Utils {
 
-	
-	public static boolean isValid(Client newClient) {
+	public static boolean isValid(User newClient) {
 
-		System.out.println(newClient.getName());
 
 		if (newClient != null) {
-			if (!inputIsValid(newClient.getName())) {
-				return false;
-			}
-
-			if (!inputIsValid(newClient.getSurname())) {
-				return false;
-			}
-
-			if (!inputIsValid(newClient.getPhoneNumber())) {
-				return false;
-			}
-
-			if (!inputIsValid(newClient.getIdNumber())) {
-				return false;
-			}
+			
 
 			if (!inputIsValid(newClient.getEmail())) {
 				return false;
@@ -62,7 +46,6 @@ public class Utils {
 				return false;
 			}
 
-			
 		}
 
 		return true;
@@ -74,17 +57,13 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	public static boolean validateInt(int input) {
 		if (input > 0) {
 			return true;
 		}
 		return false;
 	}
-
-
-
-	
 
 	public static List<Car> carSort(List<Car> fleet, String priceOrderValue) {
 		int n = fleet.size() - 1;
@@ -114,7 +93,5 @@ public class Utils {
 
 		return fleet;
 	}
-
-	
 
 }
