@@ -1,6 +1,5 @@
 package com.springcar.app.models.service;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.springcar.app.models.dao.RoleRepository;
 import com.springcar.app.models.dao.UserRepository;
+import com.springcar.app.models.entity.Role;
 import com.springcar.app.models.entity.User;
 
 @Service
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
     private  PasswordEncoder passwordEncoder;
 
-    private static final String USER_ROLE = "ROLE_USER";
+    private static final String USER_ROLE = "USER";
 
    
 
@@ -31,6 +31,11 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+    
+    @Override
+    public Role getRoleById(Long roleId) {
+        return roleRepository.findByRoleId(roleId);
+    }
 
     @Override
     public User saveUser(User user) {
@@ -38,7 +43,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(1);
         // Set Role to ROLE_USER
-        user.setRoles(Collections.singletonList(roleRepository.findByRole(USER_ROLE)));
+        Role role = new Role();
+        role.setRole(USER_ROLE);
+        user.setRole(role);
         return userRepository.saveAndFlush(user);
     }
 }

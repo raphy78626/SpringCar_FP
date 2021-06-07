@@ -36,16 +36,16 @@ public class MvcConfig implements WebMvcConfigurer {
                 
                )
 		        .addResourceLocations(
-		           "classpath:/vendor/",
+		           "classpath:/static/vendor/",
         		   "classpath:/static/css/",
         		   "classpath:/static/js/",
         		   "classpath:/static/images/",
         		   "classpath:/static/api/",
                    "classpath:/resources/",
                    "classpath:/static/font-awesome/",
-                   "classpath:/assets/",
-                   "classpath:/assets/images/", 
-                   "classpath:/assets/css/", 
-                   "classpath:/assets/fonts/");
+                   "classpath:/static/assets/",
+                   "classpath:/static/assets/images/", 
+                   "classpath:/static/assets/css/", 
+                   "classpath:/static/assets/fonts/");
 	}
 }

@@ -43,7 +43,6 @@ INSERT INTO car_make(make, model) VALUES ('Maruti Suzuki', 'Celerio')
 INSERT INTO car_make(make, model) VALUES ('Maruti Suzuki', 'Swift Dzire')
 
 
-INSERT INTO car_make(make, model) VALUES ('Hyundai', 'Wagon R 1.0')
 INSERT INTO car_make(make, model) VALUES ('Hyundai', 'Grand i10')
 INSERT INTO car_make(make, model) VALUES ('Hyundai', 'Elite i20')
 INSERT INTO car_make(make, model) VALUES ('Hyundai', 'Eon')

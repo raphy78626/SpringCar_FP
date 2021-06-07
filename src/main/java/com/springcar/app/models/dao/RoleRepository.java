@@ -7,4 +7,6 @@ import com.springcar.app.models.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Role findByRole(@Param("role") String role);
+    
+    Role findByRoleId(@Param("roleId") Long roleId);
 }

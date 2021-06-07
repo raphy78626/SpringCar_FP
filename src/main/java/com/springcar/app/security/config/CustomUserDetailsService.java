@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
 			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			Collection<Role> userRoles = user.getRoles();
+			Role userRoles = user.getRole();
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
 			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),

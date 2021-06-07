@@ -47,20 +47,7 @@ public class UserController {
 		return "/user/login/index";
 	}
 
-	@PostMapping("/user/login")
-	public String loginProcess(HttpServletRequest request, HttpServletResponse response,
-			@ModelAttribute("login") LoginBean login, HttpSession session) {
-
-		Optional<User> userOption = clientService.findByEmail(login.getEmail());
-
-		if (userOption.isPresent() && userOption.get().getPassword().equals(login.getPassword())) {
-			session.setAttribute("client", userOption.get());
-		} else {
-			session.setAttribute("error_userAuthentification", "Username or password is wrong!");
-			return "user/login/index";
-		}
-		return "redirect:/";
-	}
+	
 
 	@GetMapping("/user/addcars")
 	public String showAddCars(HttpServletRequest request, HttpServletResponse response, Model model) {

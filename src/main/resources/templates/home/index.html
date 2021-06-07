@@ -13,6 +13,9 @@
 <meta name="author" content="">
 <link rel="icon" href="assets/images/favicon.ico">
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script th:src="@{/js/dynaRDrop.js}"></script>
+
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
 	rel="stylesheet">
@@ -116,18 +119,11 @@
 								<option value="">--All --</option>
 								<option value="">--All --</option>
 							</select> <label>Make:</label> <select class="form-control">
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-							</select> <label>Model:</label> <select class="form-control">
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
-								<option value="">-- All --</option>
+								<option th:each="make:${makeList}" th:value="${make}"
+										th:text="${make.key}"></option>
+							</select> <label>Model:</label> <select class="form-control"  id="model"
+									name="model">
+								
 							</select> <label>Price:</label> <select class="form-control">
 								<option value="">-- All --</option>
 								<option value="">-- All --</option>

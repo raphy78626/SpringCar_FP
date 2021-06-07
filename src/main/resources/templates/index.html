@@ -7,51 +7,7 @@
 
 <div layout:fragment="page_content" id="page_content" class="container h-100 bg-white overflow-hidden">
 
-	<!-- FORM DE BÚSQUEDA -->
-	<form class="mt-5 mb-5 row" th:action="@{/}" th:object="${session.reservation}" method="post">
-		<div class="col-12 col-lg pb-3 pb-lg-0 overflow-hidden">
-			<div class="form-group">
-				<label for="officeCode">Pickup office:</label> 
-				<select id="officeCode" name="officeCode" class="form-control" required>
-					<option value="">Select...</option>
-					<option th:each="office:${offices}" th:value="${office.officeCode}" th:text="${office.officeName}" th:selected="${office.officeCode == session.reservation.officeCode}"></option>
-				</select>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg pb-3 pb-lg-0 overflow-hidden">
-			<div class="form-group">
-				<label for="officeSelection">Delivery office:</label> 
-				<select id="officeSelection" name="officeReturnCode" class="form-control"required>
-					<option value="">Select...</option>
-					<option th:each="office:${offices}" th:value="${office.officeCode}" th:text="${office.officeName}" th:selected="${office.officeCode == session.reservation.officeCode}"></option>
-				</select>
-			</div>
-		</div>
-		<div class="col-12 col-lg pb-3 pb-lg-0 overflow-hidden">
-			<div class="form-group">
-				<label for="initDate">Pickup date:</label>
-				<input class="form-control" type="date" name="initDate" id="initDate" step="1" min="2019-06-01" max="2020-06-01" value="2019-06-01" required>
-			</div>
-		</div>
-		<div class="col-12 col-lg pb-3 pb-lg-0 overflow-hidden">
-
-			<div class="form-group">
-				<label for="finalDate">Delivery date:</label>
-				<input class="form-control" type="date" name="finalDate" id="finalDate" step="1" min="2019-06-01" max="2020-06-01" value="2019-06-01" required>
-				<div th:if="${session.errorDates != null}">
-					<small class="form-text text-muted" th:text="${session.errorDates}"></small>
-				</div>
-			</div>
-		</div>
-		<div class="col-12 col-lg pb-3 pb-lg-0 overflow-hidden">
-
-			<div class="form-group">
-				<label class="d-none d-lg-block">&nbsp</label>
-				<button type="submit" class="btn float-right w-100">Submit</button>
-			</div>
-		</div>
-	</form>
+	
 
 	<!-- CAROUSEL-->
 

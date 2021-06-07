@@ -26,7 +26,7 @@
 	</ul>
 	<!-- show login only if user is not yet authenticated -->
 	<ul class="nav navbar-nav" sec:authorize="!isAuthenticated()">
-		<li class="active"><a th:href="@{/user/login}">Login</a></li>
+		<li class="active"><a th:href="@{/user/login}">Login1</a></li>
 	</ul>
 	<!-- show sign out only if user is authenticated -->
 	<ul class="nav navbar-nav" sec:authorize="isAuthenticated()">
