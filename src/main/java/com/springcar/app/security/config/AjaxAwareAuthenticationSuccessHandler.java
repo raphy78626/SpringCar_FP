@@ -29,6 +29,7 @@ public class AjaxAwareAuthenticationSuccessHandler implements AuthenticationSucc
 			System.out.println("Can't redirect");
 			return;
 		}
+//		redirectStrategy.sendRedirect(request, response, "/fleet");
 	}
 
 	/**

@@ -66,8 +66,9 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 		context.setAuthentication(authResult);
 		SecurityContextHolder.setContext(context);
 		successHandler.onAuthenticationSuccess(request, response, authResult);
-
-		chain.doFilter(request, response);
+		response.sendRedirect("/fleet");
+//		response.send
+//		chain.doFilter(request, response);
 	}
 
 	@Override
