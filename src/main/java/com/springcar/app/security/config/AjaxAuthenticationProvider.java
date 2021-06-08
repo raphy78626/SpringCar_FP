@@ -32,7 +32,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     private  UserService userService;
 	
 	@Autowired
-    private  AuthenticationFailureHandler failureHandler;
+    private  AjaxAwareAuthenticationFailureHandler failureHandler;
 
     public AjaxAuthenticationProvider(final UserServiceImpl userService, final BCryptPasswordEncoder encoder) {
         this.userService = userService;

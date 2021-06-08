@@ -26,6 +26,7 @@ public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFail
 		
 		if (e instanceof BadCredentialsException) {
 			request.getSession().setAttribute("error_userAuthentification", "Username or password is wrong!");
+			response.sendRedirect("/user/login");
 		} /*
 			 * else if (e instanceof JwtExpiredTokenException) {
 			 * mapper.writeValue(response.getWriter(), ErrorResponse.of("Token has expired",
