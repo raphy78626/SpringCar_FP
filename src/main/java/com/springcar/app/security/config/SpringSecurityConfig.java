@@ -33,8 +33,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private  AccessDeniedHandler accessDeniedHandler;
-
+	private AccessDeniedHandler accessDeniedHandler;
 
 	@Value("${spring.admin.username}")
 	private String adminUsername;
@@ -53,13 +52,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	CustomUserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private AuthenticationFailureHandler failureHandler;
-	
+
 	@Autowired
 	private AuthenticationSuccessHandler successHandler;
 
@@ -82,10 +81,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
 
 	protected AjaxLoginProcessingFilter buildAjaxLoginProcessingFilter() throws Exception {
-		AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter("/login", this.failureHandler , this.successHandler);
+		AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter("/login", this.failureHandler,
+				this.successHandler);
 		filter.setAuthenticationManager(this.authenticationManager);
 		return filter;
 	}
@@ -98,14 +97,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/user/login/**", "/user/registration/**","/assets/images/**", "/vendor/**", "/images/**", "/js/**", "/css/**",
-				"/assets/images/**", "/assets/css/**", "/assets/fonts/**", "/assets/js/**").permitAll().anyRequest()
-				.permitAll();
-		
-		
-		
+		/*
+		 * http.authorizeRequests() .antMatchers( )
+		 * .permitAll().anyRequest().permitAll();
+		 */
 		http.csrf().disable().authorizeRequests()
-				.antMatchers("/fleet/index", "/user/login/", "/user/registration", "/error", "/h2-console/**")
+				.antMatchers("/assets/images/**", "/vendor/**", "/images/**",
+						"/js/**", "/css/**", "/assets/images/**", "/assets/css/**", "/assets/fonts/**", "/assets/js/**", "/fleet/index", "/user/login/", "/user/registration", "/error", "/h2-console/**")
 				.permitAll().anyRequest().authenticated().and().formLogin().loginPage("/user/login")
 				.usernameParameter("email").defaultSuccessUrl("/fleet").permitAll().and().logout().permitAll().and()
 				.exceptionHandling().accessDeniedHandler(accessDeniedHandler)
@@ -127,7 +125,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(ajaxAuthenticationProvider);
-		
+
 	}
 	/**
 	 * Authentication details

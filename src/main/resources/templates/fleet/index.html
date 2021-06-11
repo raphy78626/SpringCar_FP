@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 
@@ -18,7 +19,7 @@
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
 	rel="stylesheet">
 
-<title>PHPJabbers.com | Free Car Dealer Website Template</title>
+<title>Auto5 Cars</title>
 
 <!-- Bootstrap core CSS -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -77,8 +78,13 @@
 						<li class="nav-item"><a class="nav-link" href="about-us.html">About
 								Us</a></li>
 
+						<li class="nav-item" sec:authorize="isAuthenticated()"><a
+							class="nav-link" th:href="@{/logout}">Logout</a></li>
+
 						<li class="nav-item"><a class="nav-link" href="contact.html">Contact
 								Us</a></li>
+
+
 					</ul>
 				</div>
 			</div>
@@ -106,23 +112,19 @@
 				<div class="col-md-3">
 					<div class="contact-form">
 						<form action="#">
-							<label>Make:</label> <select id="make" name="make" class="form-control">
-							<option th:each="make:${makeList}" th:value="${make}"
-										th:text="${make.key}"></option>
-							</select> 
-							 <label>Model:</label> <select class="form-control" id="model" name="model">
-								
-							</select>
-							<label>Fuel:</label> <select class="form-control" id="fuelType"
-									name="fuelType">
+							<label>Make:</label> <select id="make" name="make"
+								class="form-control">
+								<option th:each="make:${makeList}" th:value="${make}"
+									th:text="${make.key}"></option>
+							</select> <label>Model:</label> <select class="form-control" id="model"
+								name="model">
+
+							</select> <label>Fuel:</label> <select class="form-control" id="fuelType"
+								name="fuelType">
 								<option value="">Select...</option>
-							</select>
-							
-							<label>Transmission</label>
-							<select
-									id="transmission" name="transmission" class="form-control"
-									required>
-									<option value="">Select...</option>
+							</select> <label>Transmission</label> <select id="transmission"
+								name="transmission" class="form-control" required>
+								<option value="">Select...</option>
 
 							</select>
 
@@ -146,8 +148,8 @@
 										<h6>
 											<Strong th:inline="text"> Rs [[${car.price}]] </strong>
 										</h6>
-										<small th:text="${car.fuelType}" > </small> / <small
-											th:text="${car.makeYear}" > </small> <small> <strong
+										<small th:text="${car.fuelType}"> </small> / <small
+											th:text="${car.makeYear}"> </small> <small> <strong
 											title="Author"><i class="fa fa-dashboard"><strong
 													th:text="${car.kilometers}"></strong></i> </strong>
 											&nbsp;&nbsp;&nbsp;&nbsp; <strong title="Author"><i
@@ -159,7 +161,7 @@
 							</div>
 
 
-							<div class="col-md-12">
+							<!-- <div class="col-md-12">
 								<ul class="pages">
 									<li><a href="#">1</a></li>
 									<li class="active"><a href="#">2</a></li>
@@ -167,7 +169,7 @@
 									<li><a href="#">4</a></li>
 									<li><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
 								</ul>
-							</div>
+							</div> -->
 						</div>
 
 
@@ -184,8 +186,8 @@
 				<div class="col-md-12">
 					<div class="inner-content">
 						<p>
-							Copyright © 2020 Company Name - Template by: <a
-								href="https://www.phpjabbers.com/">PHPJabbers.com</a>
+							Copyright © 2020 Rahil Works - Template by: <a
+								href="https://www.phpjabbers.com/">auto5cars.com</a>
 						</p>
 					</div>
 				</div>

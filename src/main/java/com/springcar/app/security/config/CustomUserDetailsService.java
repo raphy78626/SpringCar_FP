@@ -1,9 +1,9 @@
 package com.springcar.app.security.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.springcar.app.models.entity.Role;
 import com.springcar.app.models.entity.User;
+import com.springcar.app.models.entity.UserRole;
 import com.springcar.app.models.service.UserService;
 
 @Service("customUserDetailsService")
@@ -30,10 +30,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Optional<User> optionalUser = userService.findByEmail(username);
 
 		if (optionalUser.isPresent()) {
+			
 			User user = optionalUser.get();
 			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			Role userRoles = user.getRole();
-			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+			Set<UserRole> userRoles = user.getUserRolesList();
+			for (UserRole ur : userRoles) {
+				authorities.add(new SimpleGrantedAuthority("ROLE_" + ur.getType()));
+			}
 
 			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
 					authorities);

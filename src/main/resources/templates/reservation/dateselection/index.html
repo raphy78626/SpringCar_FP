@@ -104,12 +104,7 @@
 						<div class="bd-example">
 							<div id="carouselExampleCaptions" class="carousel slide"
 								data-ride="carousel">
-								<!-- <ol class="carousel-indicators" th:each="picture, iterstat : ${session.car.images}">
-									<li data-target="#carouselExampleCaptions" data-slide-to="${iterstat.index}"
-										th:class="${iterstat.index}== 0  ? 'active:''"
-										></li>
-									
-								</ol> -->
+							
 								<div class="carousel-inner">
 									<div th:each="picture, iterstat : ${session.car.images}"
 									th:class="${iterstat.index}== 0  ? 'carousel-item active':'carousel-item'">

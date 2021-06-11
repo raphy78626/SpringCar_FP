@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.springcar.app.controllers.beans.LoginBean;
 import com.springcar.app.models.entity.Car;
 import com.springcar.app.models.entity.CarMake;
 import com.springcar.app.models.entity.Images;
@@ -121,7 +120,8 @@ public class UserController {
     @RequestMapping(value = "/user/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
 
-        if (clientService.findByEmail(user.getEmail()).isPresent()) {
+    	Optional<User> optionalUser = clientService.findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
             bindingResult
                     .rejectValue("email", "error.user",
                             "There is already a user registered with the email provided");
@@ -134,6 +134,7 @@ public class UserController {
         } else {
             // Registration successful, save user
             // Set user role to USER and set it as active
+        
         	clientService.saveUser(user);
 
             modelAndView.addObject("successMessage", "User has been registered successfully");

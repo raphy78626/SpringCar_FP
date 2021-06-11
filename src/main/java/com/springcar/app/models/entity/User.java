@@ -1,5 +1,9 @@
 package com.springcar.app.models.entity;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,25 +12,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "email", unique = true, nullable = false)
-    @javax.validation.constraints.Email(message = "*Please provide a valid Email")
+    @Email(message = "*Please provide a valid Email")
     @NotBlank(message = "*Please provide an email")
     private String email;
 
@@ -58,16 +68,18 @@ public class User {
 	@Column(name = "active", nullable = false)
     private int active;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "role_id")
-    private Role role;
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "AppUsersRoles", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
+	private Set<UserRole> userRolesList = new HashSet<UserRole>();
 
-    public Role getRole() {
-		return role;
+   
+
+	public Set<UserRole> getUserRolesList() {
+		return userRolesList;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setUserRolesList(Set<UserRole> userRolesList) {
+		this.userRolesList = userRolesList;
 	}
 
 	public Long getId() {
@@ -109,6 +121,4 @@ public class User {
     public void setActive(int active) {
         this.active = active;
     }
-
-   
 }
